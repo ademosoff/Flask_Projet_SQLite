@@ -75,7 +75,7 @@ def enregistrer_client():
     cursor.execute('INSERT INTO clients (created, nom, prenom, adresse) VALUES (?, ?, ?, ?)', (1002938, nom, prenom, "ICI"))
     conn.commit()
     conn.close()
-    return redirect('/consultation/')  # Rediriger vers la page d'accueil après l'enregistrement
+    return redirect('/consultation/')  # Rediriger vers la page d'accueil après l'enregistrement 
                                                                                                                                        
 if __name__ == "__main__":
   app.run(debug=True)

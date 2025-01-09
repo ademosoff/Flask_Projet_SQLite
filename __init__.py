@@ -80,7 +80,7 @@ def enregistrer_client():
 # Route pour afficher le formulaire de recherche
 @app.route("/search", methods=["GET"])
 def formulaire_search():
-    return render_template("search.html")
+    return render_template("formulaire_search.html")
 
 # Route pour traiter la recherche
 @app.route("/search", methods=["POST"])
@@ -99,7 +99,7 @@ def search_client():
     conn.close()
 
     # Envoyer les résultats au template HTML
-    return render_template("search.html", results=[{"nom": row[1]} for row in results])
+    return render_template("read_data.html", data=[{"nom": row[1]} for row in results])
 
 if __name__ == "__main__":
   app.run(debug=True)

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recherche dans la Base de Données</title>
+</head>
+<body>
+    <h1>Recherche d'un nom</h1>
+    <form action="/search" method="POST">
+        <label for="name">Nom :</label>
+        <input type="text" id="name" name="name" required>
+        <button type="submit">Rechercher</button>
+    </form>
+
+    {% if results %}
+        <h2>Résultats trouvés :</h2>
+        <ul>
+            {% for result in results %}
+                <li>{{ result.nom }}</li>
+            {% endfor %}
+        </ul>
+    {% elif results is not none %}
+        <p>Aucun résultat trouvé.</p>
+    {% endif %}
+</body>
+</html>

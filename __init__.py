@@ -76,6 +76,30 @@ def enregistrer_client():
     conn.commit()
     conn.close()
     return redirect('/consultation/')  # Rediriger vers la page d'accueil après l'enregistrement 
-                                                                                                                                       
+
+# Route pour afficher le formulaire de recherche
+@app.route("/", methods=["GET"])
+def formulaire_search():
+    return render_template("search.html", results=None)
+
+# Route pour traiter la recherche
+@app.route("/search", methods=["POST"])
+def search_client():
+    nom = request.form["nom"]
+    prenom = request.form['prenom']
+    results = []
+
+    # Connexion à la base de données
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+
+    # Requête pour rechercher le nom
+    cursor.execute("SELECT * FROM utilisateurs WHERE nom LIKE ? or prenom LIKE ?", ('%' + nom + '%','%' + prenom + '%'))
+    results = cursor.fetchall()
+    conn.close()
+
+    # Envoyer les résultats au template HTML
+    return render_template("search.html", results=[{"nom": row[1]} for row in results])
+
 if __name__ == "__main__":
   app.run(debug=True)

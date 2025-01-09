@@ -87,7 +87,6 @@ def formulaire_search():
 def search_client():
     nom = request.form["nom"]
     prenom = request.form['prenom']
-    results = []
 
     # Connexion à la base de données
     conn = sqlite3.connect("database.db")
@@ -95,11 +94,11 @@ def search_client():
 
     # Requête pour rechercher le nom
     cursor.execute("SELECT * FROM utilisateurs WHERE nom LIKE ? or prenom LIKE ?", ('%' + nom + '%','%' + prenom + '%'))
-    results = cursor.fetchall()
+    data = cursor.fetchall()
     conn.close()
 
     # Envoyer les résultats au template HTML
-    return render_template("read_data.html", data=[{"nom": row[1]} for row in results])
+    return render_template("read_data.html", data=data)
 
 if __name__ == "__main__":
   app.run(debug=True)

@@ -78,7 +78,7 @@ def enregistrer_client():
     return redirect('/consultation/')  # Rediriger vers la page d'accueil après l'enregistrement 
 
 # Route pour afficher le formulaire de recherche
-@app.route("/", methods=["GET"])
+@app.route("/search", methods=["GET"])
 def formulaire_search():
     return render_template("search.html", results=None)
 

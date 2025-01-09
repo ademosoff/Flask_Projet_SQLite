@@ -80,7 +80,7 @@ def enregistrer_client():
 # Route pour afficher le formulaire de recherche
 @app.route("/search", methods=["GET"])
 def formulaire_search():
-    return render_template("search.html", results=None)
+    return render_template("search.html")
 
 # Route pour traiter la recherche
 @app.route("/search", methods=["POST"])

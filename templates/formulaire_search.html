@@ -12,16 +12,5 @@
         <input type="text" id="name" name="name" required>
         <button type="submit">Rechercher</button>
     </form>
-
-    {% if results %}
-        <h2>Résultats trouvés :</h2>
-        <ul>
-            {% for result in results %}
-                <li>{{ result.nom }}</li>
-            {% endfor %}
-        </ul>
-    {% elif results is not none %}
-        <p>Aucun résultat trouvé.</p>
-    {% endif %}
 </body>
 </html>

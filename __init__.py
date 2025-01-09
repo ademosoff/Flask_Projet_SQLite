@@ -85,15 +85,14 @@ def formulaire_search():
 # Route pour traiter la recherche
 @app.route("/search", methods=["POST"])
 def search_client():
-    nom = request.form["nom"]
-    prenom = request.form['prenom']
+    nom = request.form["name"]
 
     # Connexion à la base de données
     conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
 
     # Requête pour rechercher le nom
-    cursor.execute("SELECT * FROM utilisateurs WHERE nom LIKE ? or prenom LIKE ?", ('%' + nom + '%','%' + prenom + '%'))
+    cursor.execute("SELECT * FROM utilisateurs WHERE nom LIKE ? or prenom LIKE ?", ('%' + nom + '%','%' + nom + '%'))
     data = cursor.fetchall()
     conn.close()
 

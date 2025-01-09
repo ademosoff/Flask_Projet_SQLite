@@ -78,12 +78,12 @@ def enregistrer_client():
     return redirect('/consultation/')  # Rediriger vers la page d'accueil après l'enregistrement 
 
 # Route pour afficher le formulaire de recherche
-@app.route("/search", methods=["GET"])
+@app.route("/fiche_nom", methods=["GET"])
 def formulaire_search():
     return render_template("formulaire_search.html")
 
 # Route pour traiter la recherche
-@app.route("/search", methods=["POST"])
+@app.route("/fiche_nom", methods=["POST"])
 def search_client():
     nom = request.form["name"]
 

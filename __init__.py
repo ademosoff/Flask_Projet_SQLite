@@ -92,7 +92,7 @@ def search_client():
     cursor = conn.cursor()
 
     # Requête pour rechercher le nom
-    cursor.execute("SELECT * FROM utilisateurs WHERE nom LIKE ? or prenom LIKE ?", ('%' + nom + '%','%' + nom + '%'))
+    cursor.execute("SELECT * FROM clients WHERE nom LIKE ? or prenom LIKE ?", ('%' + nom + '%','%' + nom + '%'))
     data = cursor.fetchall()
     conn.close()
 

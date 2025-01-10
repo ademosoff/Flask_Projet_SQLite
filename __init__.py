@@ -30,9 +30,6 @@ def lecture():
     elif est_user():
         return "<h2>Bravo, vous êtes user</h2>"
 
-  # Si l'utilisateur est authentifié
-    return "<h2>Bravo, vous êtes authentifié</h2>"
-
 @app.route('/authentification', methods=['GET', 'POST'])
 def authentification():
     if request.method == 'POST':
@@ -56,7 +53,7 @@ def authentification():
 @app.route('/logout')
 def logout():
     session.pop('role', None)
-    return redirect(url_for('lecture'))
+    return "<h2>Déconnection, veuillez fermer la page !</h2>"
 
 @app.route('/fiche_client/<int:post_id>')
 def Readfiche(post_id):

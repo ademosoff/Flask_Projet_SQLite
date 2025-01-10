@@ -52,6 +52,12 @@ def authentification():
 
     return render_template('formulaire_authentification.html', error=False)
 
+# Déconnexion (pour tous les utilisateurs)
+@app.route('/logout')
+def logout():
+    session.pop('role', None)
+    return redirect(url_for('home'))
+
 @app.route('/fiche_client/<int:post_id>')
 def Readfiche(post_id):
     conn = sqlite3.connect('database.db')

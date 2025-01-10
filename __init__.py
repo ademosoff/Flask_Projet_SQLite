@@ -52,6 +52,8 @@ def authentification():
 # Déconnexion (pour tous les utilisateurs)
 @app.route('/logout')
 def logout():
+    if not est_admin() and not est_user():
+        return "<h2>Déjà déconnection !</h2>"
     session.pop('role', None)
     return "<h2>Déconnection, veuillez fermer la page !</h2>"
 

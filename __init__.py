@@ -41,7 +41,7 @@ def authentification():
         # Vérifier les identifiants admin
         elif request.form['username'] == 'user' and request.form['password'] == '12345': # password à cacher par la suite
             session['role'] = "user"
-            print(f"Next URL: {next_url}")
+            print(f"Next URL: {request.args.get('next')}")
             next_url = request.args.get('next')
             return redirect(next_url)
         else:

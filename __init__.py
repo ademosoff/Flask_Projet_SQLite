@@ -96,9 +96,9 @@ def enregistrer_client():
 # Route pour afficher le formulaire de recherche
 @app.route("/fiche_nom", methods=["GET"])
 def formulaire_search():
-    if not est_admin and not est_user:
-        return redirect(url_for('authentification', next=request.path))
-    return render_template("formulaire_search.html")
+    if est_admin or est_user:
+        return render_template("formulaire_search.html")
+    return redirect(url_for('authentification', next=request.path))
 
 # Route pour traiter la recherche
 @app.route("/fiche_nom", methods=["POST"])

@@ -9,7 +9,7 @@ app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'  # Clé secrète pour les sessions
 
 # Fonction pour créer une clé "authentifie" dans la session utilisateur
-# Vérification des rôles dans la session
+# Vérification des rôles dans la session 
 def est_admin():
     return session.get('role') == 'admin'
 

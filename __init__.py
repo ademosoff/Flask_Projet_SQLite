@@ -9,8 +9,12 @@ app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'  # Clé secrète pour les sessions
 
 # Fonction pour créer une clé "authentifie" dans la session utilisateur
-def est_authentifie():
-    return session.get('authentifie')
+# Vérification des rôles dans la session
+def est_admin():
+    return session.get('role') == 'admin'
+
+def est_user():
+    return session.get('role') == 'user'
 
 @app.route('/')
 def hello_world():
@@ -18,9 +22,13 @@ def hello_world():
 
 @app.route('/lecture')
 def lecture():
-    if not est_authentifie():
+    if not est_admin() and not est_user():
         # Rediriger vers la page d'authentification si l'utilisateur n'est pas authentifié
         return redirect(url_for('authentification'))
+    elif est_admin():
+        return "<h2>Bravo, vous êtes admin</h2>"
+    elif est_user():
+        return "<h2>Bravo, vous êtes user</h2>"
 
   # Si l'utilisateur est authentifié
     return "<h2>Bravo, vous êtes authentifié</h2>"
@@ -28,9 +36,14 @@ def lecture():
 @app.route('/authentification', methods=['GET', 'POST'])
 def authentification():
     if request.method == 'POST':
-        # Vérifier les identifiants
+        # Vérifier les identifiants admin
         if request.form['username'] == 'admin' and request.form['password'] == 'password': # password à cacher par la suite
-            session['authentifie'] = True
+            session['role'] = "admin"
+            # Rediriger vers la route lecture après une authentification réussie
+            return redirect(url_for('lecture'))
+        # Vérifier les identifiants admin
+        elif request.form['username'] == 'user' and request.form['password'] == '12345': # password à cacher par la suite
+            session['role'] = "user"
             # Rediriger vers la route lecture après une authentification réussie
             return redirect(url_for('lecture'))
         else:

@@ -101,6 +101,7 @@ def enregistrer_client():
 def formulaire_search():
     if est_admin() or est_user():
         return render_template("formulaire_search.html")
+    print(request.path)
     return redirect(url_for('authentification', next=request.path))
 
 # Route pour traiter la recherche

@@ -56,7 +56,7 @@ def authentification():
 @app.route('/logout')
 def logout():
     session.pop('role', None)
-    return redirect(url_for('home'))
+    return redirect(url_for('lecture'))
 
 @app.route('/fiche_client/<int:post_id>')
 def Readfiche(post_id):

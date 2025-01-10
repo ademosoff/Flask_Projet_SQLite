@@ -41,7 +41,7 @@ def authentification():
         # Vérifier les identifiants admin
         elif request.form['username'] == 'user' and request.form['password'] == '12345': # password à cacher par la suite
             session['role'] = "user"
-            next_url = request.args.get('next') or url_for('lecture')
+            next_url = request.args.get('next')
             return redirect(next_url)
         else:
             # Afficher un message d'erreur si les identifiants sont incorrects 
@@ -53,7 +53,7 @@ def authentification():
 @app.route('/logout')
 def logout():
     if not est_admin() and not est_user():
-        return "<h2>Déjà déconnection !</h2>"
+        return "<h2>Déjà déconnecté !</h2>"
     session.pop('role', None)
     return "<h2>Déconnection, veuillez fermer la page !</h2>"
 

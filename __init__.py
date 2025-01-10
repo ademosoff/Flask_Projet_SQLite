@@ -32,17 +32,19 @@ def lecture():
 
 @app.route('/authentification', methods=['GET', 'POST'])
 def authentification():
+    next_url = request.args.get('next')
+    print(next_url)
     if request.method == 'POST':
         # Vérifier les identifiants admin
         if request.form['username'] == 'admin' and request.form['password'] == 'password': # password à cacher par la suite
             session['role'] = "admin"
-            next_url = request.args.get('next') or url_for('lecture')
+            #next_url = request.args.get('next') or url_for('lecture')
             return redirect(next_url)
         # Vérifier les identifiants admin
         elif request.form['username'] == 'user' and request.form['password'] == '12345': # password à cacher par la suite
             session['role'] = "user"
             print(f"Next URL: {request.args.get('next')}")
-            next_url = request.args.get('next')
+            #next_url = request.args.get('next')
             return redirect(next_url)
         else:
             # Afficher un message d'erreur si les identifiants sont incorrects 

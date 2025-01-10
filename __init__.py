@@ -24,7 +24,7 @@ def hello_world():
 def lecture():
     if not est_admin() and not est_user():
         # Rediriger vers la page d'authentification si l'utilisateur n'est pas authentifié
-        return redirect(url_for('authentification'))
+        return redirect(url_for('authentification', next=request.path))
     elif est_admin():
         return "<h2>Bravo, vous êtes admin</h2>"
     elif est_user():
@@ -36,13 +36,13 @@ def authentification():
         # Vérifier les identifiants admin
         if request.form['username'] == 'admin' and request.form['password'] == 'password': # password à cacher par la suite
             session['role'] = "admin"
-            # Rediriger vers la route lecture après une authentification réussie
-            return redirect(url_for('lecture'))
+            next_url = request.args.get('next') or url_for('lecture')
+            return redirect(next_url)
         # Vérifier les identifiants admin
         elif request.form['username'] == 'user' and request.form['password'] == '12345': # password à cacher par la suite
             session['role'] = "user"
-            # Rediriger vers la route lecture après une authentification réussie
-            return redirect(url_for('lecture'))
+            next_url = request.args.get('next') or url_for('lecture')
+            return redirect(next_url)
         else:
             # Afficher un message d'erreur si les identifiants sont incorrects 
             return render_template('formulaire_authentification.html', error=True)
@@ -96,6 +96,8 @@ def enregistrer_client():
 # Route pour afficher le formulaire de recherche
 @app.route("/fiche_nom", methods=["GET"])
 def formulaire_search():
+        if not est_admin and not est_user:
+            return redirect(url_for('authentification', next=request.path))
     return render_template("formulaire_search.html")
 
 # Route pour traiter la recherche

@@ -49,8 +49,7 @@ def authentification():
         else:
             # Afficher un message d'erreur si les identifiants sont incorrects 
             return render_template('formulaire_authentification.html', error=True)
-
-    return render_template('formulaire_authentification.html', error=False)
+        return render_template('formulaire_authentification.html', error=False)
 
 # Déconnexion (pour tous les utilisateurs)
 @app.route('/logout')

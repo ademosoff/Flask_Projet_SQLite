@@ -47,7 +47,7 @@ def authentification():
             print(f"Next URL: {request.args.get('next')}")
             print(next_url)
             #next_url = request.args.get('next')
-            return redirect(next_url)
+            return redirect(url_for(next_url))
         else:
             # Afficher un message d'erreur si les identifiants sont incorrects 
             return render_template('formulaire_authentification.html', error=True)

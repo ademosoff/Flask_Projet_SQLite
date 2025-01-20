@@ -33,7 +33,7 @@ def lecture():
 @app.route('/authentification', methods=['GET', 'POST'])
 def authentification():
     print("Route authentification appelée")
-    next_url = request.args.get('next')
+    next_url = request.args.get('next')[1:]
     print(next_url)
     if request.method == 'POST':
         # Vérifier les identifiants admin

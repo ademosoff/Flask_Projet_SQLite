@@ -8,6 +8,9 @@ import sqlite3
 app = Flask(__name__)                                                                                                                  
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'  # Clé secrète pour les sessions
 
+# Durée maximale d'inactivité en secondes (10 minutes)
+SESSION_TIMEOUT = 10 #10 * 60
+
 # Fonction pour créer une clé "authentifie" dans la session utilisateur
 # Vérification des rôles dans la session 
 def est_admin():
@@ -15,6 +18,23 @@ def est_admin():
 
 def est_user():
     return session.get('role') == 'user'
+
+# Vérification du timeout avant chaque requête
+@app.before_request
+def verifier_inactivite():
+    # Vérifier si l'utilisateur est connecté
+    if 'role' in session:
+        dernier_acces = session.get('dernier_acces', None)
+        maintenant = time.time()
+        
+        # Si le dernier accès est défini et dépasse le timeout
+        if dernier_acces and (maintenant - dernier_acces > SESSION_TIMEOUT):
+            # Supprimer la session et rediriger vers la déconnexion
+            session.clear()
+            return redirect(url_for('logout'))
+        
+        # Mettre à jour le timestamp du dernier accès
+        session['dernier_acces'] = maintenant
 
 @app.route('/')
 def hello_world():
@@ -38,12 +58,12 @@ def authentification():
         # Vérifier les identifiants admin
         if request.form['username'] == 'admin' and request.form['password'] == 'password': # password à cacher par la suite
             session['role'] = "admin"
-            #next_url = request.args.get('next') or url_for('lecture')
+            session['dernier_acces'] = time.time()  # Enregistrer le timestamp
             return redirect(next_url)
         # Vérifier les identifiants admin
         elif request.form['username'] == 'user' and request.form['password'] == '12345': # password à cacher par la suite
             session['role'] = "user"
-            #next_url = request.args.get('next')
+            session['dernier_acces'] = time.time()  # Enregistrer le timestamp
             return redirect(next_url)
         else:
             # Afficher un message d'erreur si les identifiants sont incorrects 

@@ -10,7 +10,7 @@ app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'  # Clé secrète pour les sessions
 
 # Durée maximale d'inactivité en secondes (10 minutes)
-SESSION_TIMEOUT = 10 #10 * 60
+SESSION_TIMEOUT = 10 * 60
 
 # Fonction pour créer une clé "authentifie" dans la session utilisateur
 # Vérification des rôles dans la session 

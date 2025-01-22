@@ -1,3 +1,10 @@
-<!doctype html>
-<title>Flask Server</title>
-<h1> Hello from Flask Server !</h1>
+{% extends "base.html" %}
+
+{% block title %}
+Accueil
+{% endblock %}
+
+{% block content %}
+<h1>Bienvenue sur la page d'accueil</h1>
+<p>Ceci est une démonstration avec une barre de navigation.</p>
+{% endblock %}

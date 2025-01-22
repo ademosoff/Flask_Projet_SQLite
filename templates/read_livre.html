@@ -1,9 +1,10 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consultation des Livres</title>
+{% extends "base.html" %}
+
+    {% block title %}
+        Consultation des Livres
+    {% endblock %}
+
+{% block content %}
     <style>
         table {
             width: 100%;
@@ -18,8 +19,6 @@
             background-color: #f2f2f2;
         }
     </style>
-</head>
-<body>
     <h1>Liste des Livres</h1>
     <table>
         <thead>
@@ -45,5 +44,4 @@
             {% endfor %}
         </tbody>
     </table>
-</body>
-</html>
+{% endblock %}

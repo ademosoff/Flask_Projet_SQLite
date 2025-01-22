@@ -64,13 +64,13 @@ def authentification():
         # Vérifier les identifiants admin
         if request.form['username'] == 'admin' and request.form['password'] == 'password': # password à cacher par la suite
             session['role'] = "admin"
-            session['username'] = username
+            session['username'] = request.form['username']
             session['dernier_acces'] = time.time()  # Enregistrer le timestamp
             return redirect(next_url)
         # Vérifier les identifiants admin
         elif request.form['username'] == 'user' and request.form['password'] == '12345': # password à cacher par la suite
             session['role'] = "user"
-            session['username'] = username
+            session['username'] = request.form['username']
             session['dernier_acces'] = time.time()  # Enregistrer le timestamp
             return redirect(next_url)
         else:

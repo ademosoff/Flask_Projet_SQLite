@@ -166,7 +166,7 @@ def ReadBDD_livre():
     conn.close()
 
     # Passer les données au template pour affichage
-    return render_template('read_data.html', data=data)
+    return render_template('read_livre.html', data=data)
 
 if __name__ == "__main__":
   app.run(debug=True)

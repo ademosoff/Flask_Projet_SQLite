@@ -157,7 +157,7 @@ def search_client():
 
 #---------------------------SEQUENCE 6----------------------------
 
-@app.route('/consultation/')
+@app.route('/consultation_livre/')
 def ReadBDD_livre():
     conn = sqlite3.connect('database2.db')
     cursor = conn.cursor()

@@ -84,6 +84,7 @@ def logout():
     if not est_admin() and not est_user():
         return "<h2>Déjà déconnecté !</h2>"
     session.pop('role', None)
+    session.pop('username', None)
     return "<h2>Déconnection, veuillez fermer la page !</h2>"
 
 @app.route('/fiche_client/<int:post_id>')

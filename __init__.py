@@ -201,7 +201,7 @@ def gestion_livres():
         return redirect(url_for('gestion_livres'))
     
     # Récupération des livres pour affichage
-    conn = sqlite3.connect(DB_FILE)
+    conn = sqlite3.connect(DB_LIVRE)
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM livres")
     livres = cursor.fetchall()

@@ -21,21 +21,21 @@ cur.execute("INSERT INTO livres (titre, auteur, genre, date_publication, est_dis
 
 # Ajout d'autres entrées à la table "livres"
 cur.execute("INSERT INTO livres (titre, auteur, genre, date_publication, est_disponible) VALUES (?, ?, ?, ?, 1)",
-            ('DUPONT', 'Emilie', '123, Rue des Lilas, 75001 Paris', NULL))
+            ('DUPONT', 'Emilie', '123, Rue des Lilas, 75001 Paris', None))
 cur.execute("INSERT INTO livres (titre, auteur, genre, date_publication, est_disponible) VALUES (?, ?, ?, ?, 1)",
-            ('LEROUX', 'Lucas', '456, Avenue du Soleil, 31000 Toulouse', NULL))
+            ('LEROUX', 'Lucas', '456, Avenue du Soleil, 31000 Toulouse', None))
 cur.execute("INSERT INTO livres (titre, auteur, genre, date_publication, est_disponible) VALUES (?, ?, ?, ?, 1)",
-            ('MARTIN', 'Amandine', '789, Rue des Érables, 69002 Lyon', NULL))
+            ('MARTIN', 'Amandine', '789, Rue des Érables, 69002 Lyon', None))
 cur.execute("INSERT INTO livres (titre, auteur, genre, date_publication, est_disponible) VALUES (?, ?, ?, ?, 1)",
-            ('TREMBLAY', 'Antoine', '1010, Boulevard de la Mer, 13008 Marseille', NULL))
+            ('TREMBLAY', 'Antoine', '1010, Boulevard de la Mer, 13008 Marseille', None))
 cur.execute("INSERT INTO livres (titre, auteur, genre, date_publication, est_disponible) VALUES (?, ?, ?, ?, 1)",
-            ('LAMBERT', 'Sarah', '222, Avenue de la Liberté, 59000 Lille', NULL))
+            ('LAMBERT', 'Sarah', '222, Avenue de la Liberté, 59000 Lille', None))
 cur.execute("INSERT INTO livres (titre, auteur, genre, date_publication, est_disponible) VALUES (?, ?, ?, ?, 1)",
-            ('GAGNON', 'Nicolas', '456, Boulevard des Cerisiers, 69003 Lyon', NULL))
+            ('GAGNON', 'Nicolas', '456, Boulevard des Cerisiers, 69003 Lyon', None))
 cur.execute("INSERT INTO livres (titre, auteur, genre, date_publication, est_disponible) VALUES (?, ?, ?, ?, 1)",
-            ('DUBOIS', 'Charlotte', '789, Rue des Roses, 13005 Marseille', NULL))
+            ('DUBOIS', 'Charlotte', '789, Rue des Roses, 13005 Marseille', None))
 cur.execute("INSERT INTO livres (titre, auteur, genre, date_publication, est_disponible) VALUES (?, ?, ?, ?, 1)",
-            ('LEFEVRE', 'Thomas', '333, Rue de la Paix, 75002 Paris', NULL))
+            ('LEFEVRE', 'Thomas', '333, Rue de la Paix, 75002 Paris', None))
 
 connection.commit()
 connection.close()

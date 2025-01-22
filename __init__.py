@@ -11,6 +11,9 @@ app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'  # Clé secrète pour les sessions
 
 #------------------------SEQUENCE 5---------------------------
 
+DB_FILE = "database.d"
+DB_LIVRE = "database2.db"
+
 # Durée maximale d'inactivité en secondes (10 minutes)
 SESSION_TIMEOUT = 10 * 60
 
@@ -91,7 +94,7 @@ def logout():
 
 @app.route('/fiche_client/<int:post_id>')
 def Readfiche(post_id):
-    conn = sqlite3.connect('database.db')
+    conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM clients WHERE id = ?', (post_id,))
     data = cursor.fetchall()
@@ -101,7 +104,7 @@ def Readfiche(post_id):
 
 @app.route('/consultation/')
 def ReadBDD():
-    conn = sqlite3.connect('database.db')
+    conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM clients;')
     data = cursor.fetchall()
@@ -118,7 +121,7 @@ def enregistrer_client():
     prenom = request.form['prenom']
 
     # Connexion à la base de données
-    conn = sqlite3.connect('database.db')
+    conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
 
     # Exécution de la requête SQL pour insérer un nouveau client
@@ -141,7 +144,7 @@ def search_client():
     nom = request.form["name"]
 
     # Connexion à la base de données
-    conn = sqlite3.connect("database.db")
+    conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
 
     # Requête pour rechercher le nom
@@ -159,7 +162,7 @@ def search_client():
 
 @app.route('/consultation_livre/')
 def ReadBDD_livre():
-    conn = sqlite3.connect('database2.db')
+    conn = sqlite3.connect(DB_LIVRE)
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM livres;')
     data = cursor.fetchall()
@@ -167,6 +170,44 @@ def ReadBDD_livre():
 
     # Passer les données au template pour affichage
     return render_template('read_livre.html', data=data)
+
+@app.route('/livres/', methods=['GET', 'POST'])
+def gestion_livres():
+    if request.method == 'POST':
+        # Connexion à la base de données
+        conn = sqlite3.connect(DB_LIVRE)
+        cursor = conn.cursor()
+        
+        # Si le formulaire d'ajout est soumis
+        if 'ajouter' in request.form:
+            titre = request.form['titre']
+            auteur = request.form['auteur']
+            genre = request.form['genre']
+            date_publication = request.form['date_publication']
+            cursor.execute("""
+                INSERT INTO livres (titre, auteur, genre, date_publication, est_disponible)
+                VALUES (?, ?, ?, ?, 1)
+            """, (titre, auteur, genre, date_publication))
+        
+        # Si une suppression est demandée
+        if 'supprimer' in request.form:
+            id_livre = request.form['id_livre']
+            cursor.execute("DELETE FROM livres WHERE id_livre = ?", (id_livre,))
+        
+        # Validation des modifications
+        conn.commit()
+        conn.close()
+        
+        return redirect(url_for('gestion_livres'))
+    
+    # Récupération des livres pour affichage
+    conn = sqlite3.connect(DB_FILE)
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM livres")
+    livres = cursor.fetchall()
+    conn.close()
+    
+    return render_template('livres.html', livres=livres)
 
 if __name__ == "__main__":
   app.run(debug=True)

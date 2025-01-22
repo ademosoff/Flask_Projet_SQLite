@@ -6,7 +6,13 @@
     <title>Authentification</title>
 </head>
 <body>
-    <h2>Authentification</h2>
+    {% extends "base.html" %}
+
+        {% block title %}
+        <h2>Authentification</h2>
+        {% endblock %}
+
+    {% block content %}
     {% if error %}
         <p style="color: red;">Identifiant ou mot de passe incorrect.</p>
     {% endif %}
@@ -18,5 +24,6 @@
         <input type="password" id="password" name="password"><br><br>
         <input type="submit" value="Se connecter">
     </form>
+    {% endblock %}
 </body>
 </html>

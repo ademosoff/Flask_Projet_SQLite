@@ -1,4 +1,4 @@
-from flask import Flask, render_template_string, render_template, jsonify, request, redirect, url_for, session
+from flask import Flask, render_template_string, render_template, jsonify, request, redirect, url_for, session, g
 from flask import render_template
 from flask import json
 from urllib.request import urlopen
@@ -11,6 +11,11 @@ app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'  # Clé secrète pour les sessions
 
 # Durée maximale d'inactivité en secondes (10 minutes)
 SESSION_TIMEOUT = 10 * 60
+
+# Rendre la session disponible dans tous les templates
+@app.context_processor
+def inject_session():
+    return dict(session=session)
 
 # Fonction pour créer une clé "authentifie" dans la session utilisateur
 # Vérification des rôles dans la session 

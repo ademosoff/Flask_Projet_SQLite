@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultation des Livres</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Liste des Livres</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Titre</th>
+                <th>Auteur</th>
+                <th>Genre</th>
+                <th>Date de Publication</th>
+                <th>Disponible</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for livre in data %}
+            <tr>
+                <td>{{ livre[0] }}</td>
+                <td>{{ livre[1] }}</td>
+                <td>{{ livre[2] }}</td>
+                <td>{{ livre[3] }}</td>
+                <td>{{ livre[4] }}</td>
+                <td>{{ 'Oui' if livre[5] else 'Non' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

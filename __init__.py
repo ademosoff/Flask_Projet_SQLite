@@ -9,6 +9,8 @@ import time  # Pour gérer le timestamp
 app = Flask(__name__)                                                                                                                  
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'  # Clé secrète pour les sessions
 
+#------------------------SEQUENCE 5---------------------------
+
 # Durée maximale d'inactivité en secondes (10 minutes)
 SESSION_TIMEOUT = 10 * 60
 
@@ -149,6 +151,22 @@ def search_client():
 
     # Envoyer les résultats au template HTML
     return render_template("read_data.html", data=data)
+
+
+#-----------------------------------------------------------------
+
+#---------------------------SEQUENCE 6----------------------------
+
+@app.route('/consultation/')
+def ReadBDD_livre():
+    conn = sqlite3.connect('database2.db')
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM livres;')
+    data = cursor.fetchall()
+    conn.close()
+
+    # Passer les données au template pour affichage
+    return render_template('read_data.html', data=data)
 
 if __name__ == "__main__":
   app.run(debug=True)

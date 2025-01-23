@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Gestion des Livres
+{% endblock %}
+
+{% block content %}
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: left;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+    th.sortable {
+        cursor: pointer;
+    }
+    #searchBar {
+        width: 100%;
+        margin-bottom: 20px;
+        padding: 8px;
+        font-size: 16px;
+    }
+</style>
+
+<h1>Gestion des Livres</h1>
+
+<!-- Barre de recherche -->
+<input type="text" id="searchBar" onkeyup="searchBooks()" placeholder="Rechercher un livre...">
+
+<!-- Liste des livres disponibles -->
+<h2>Liste des Livres</h2>
+<table id="livresTable">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Titre</th>
+            <th>Auteur</th>
+            <th>Genre</th>
+            <th>Date de Publication</th>
+            <th>Total</th>
+            <th>Disponibles</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for livre in livres %}
+        <tr>
+            <td>{{ livre[0] }}</td>
+            <td>{{ livre[1] }}</td>
+            <td>{{ livre[2] }}</td>
+            <td>{{ livre[3] }}</td>
+            <td>{{ livre[4] }}</td>
+            <td>{{ livre[5] }}</td>
+            <td>{{ livre[6] }}</td>
+            <td>
+                {% if livre[6] > 0 %}
+                <form method="POST" style="display: inline;">
+                    <input type="hidden" name="id_livre" value="{{ livre[0] }}">
+                    <input type="hidden" name="id_utilisateur" value="1"> <!-- ID utilisateur -->
+                    <button type="submit" name="emprunter">Emprunter</button>
+                </form>
+                {% else %}
+                Indisponible
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Liste des livres empruntés -->
+<h2>Vos Emprunts</h2>
+<table>
+    <thead>
+        <tr>
+            <th>ID Emprunt</th>
+            <th>Titre</th>
+            <th>Date d'Emprunt</th>
+            <th>Date de Retour</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for emprunt in emprunts %}
+        <tr>
+            <td>{{ emprunt[0] }}</td>
+            <td>{{ emprunt[2] }}</td>
+            <td>{{ emprunt[3] }}</td>
+            <td>{{ emprunt[4] if emprunt[4] else "Non retourné" }}</td>
+            <td>
+                {% if not emprunt[5] %}
+                <form method="POST" style="display: inline;">
+                    <input type="hidden" name="id_emprunt" value="{{ emprunt[0] }}">
+                    <input type="hidden" name="id_livre" value="{{ emprunt[1] }}">
+                    <button type="submit" name="rendre">Rendre</button>
+                </form>
+                {% else %}
+                Déjà retourné
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    // Recherche en direct
+    function searchBooks() {
+        const input = document.getElementById("searchBar");
+        const filter = input.value.toLowerCase();
+        const rows = document.querySelectorAll("#livresTable tbody tr");
+
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(filter) ? "" : "none";
+        });
+    }
+</script>
+
+{% endblock %}

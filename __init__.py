@@ -257,6 +257,8 @@ def gestion_user_livres():
         return render_template('gestion_user_livres.html', livres=livres, emprunts=emprunts)
     elif estadmin():
         redirect(url_for('gestion_livres'))
+    else :
+        return redirect(url_for('authentification', next=request.path))
 
 @app.route('/livres/', methods=['GET', 'POST'])
 def gestion_livres():

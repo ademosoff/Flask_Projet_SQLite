@@ -256,7 +256,7 @@ def gestion_user_livres():
         conn.close()
         return render_template('gestion_user_livres.html', livres=livres, emprunts=emprunts)
     elif est_admin():
-        redirect(url_for('gestion_livres'))
+        return redirect(url_for('gestion_livres'))
     else :
         return redirect(url_for('authentification', next=request.path))
 

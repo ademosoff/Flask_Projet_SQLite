@@ -164,6 +164,7 @@ def search_client():
 def ReadBDD_livre():
     conn = sqlite3.connect(DB_LIVRE)
     cursor = conn.cursor()
+    
 
     if request.method == 'POST':
         # Emprunter un livre
@@ -189,7 +190,7 @@ def ReadBDD_livre():
 
     # Liste des livres empruntés par l'utilisateur
     # Ajoutez un champ utilisateur_id pour stocker qui emprunte quoi
-    cursor.execute('SELECT * FROM livres WHERE est_disponible = 0 AND utilisateur_id IS NOT NULL;')
+    cursor.execute('SELECT * FROM livres WHERE est_disponible = 0 AND ? IS NOT NULL;', (session['username'],))
     livres_empruntes = cursor.fetchall()
 
     conn.close()

@@ -2,7 +2,7 @@ import sqlite3
 import random
 
 # Nom du fichier de la base de données SQLite
-DB_FILE = "bibliotheque.db"
+DB_FILE = "database2.db"
 
 def ajouter_exemplaires_aleatoires():
     try:

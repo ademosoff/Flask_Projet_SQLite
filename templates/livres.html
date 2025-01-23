@@ -1,76 +1,117 @@
 {% extends "base.html" %}
 
-    {% block title %}
-        Gestion des Livres
-    {% endblock %}
+{% block title %}
+    Gestion des Livres
+{% endblock %}
 
 {% block content %}
-    <style>
-        form {
-            margin-bottom: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-    </style>
+<style>
+    form {
+        margin-bottom: 20px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: left;
+    }
+    th {
+        background-color: #f2f2f2;
+        cursor: pointer;
+    }
+</style>
 
-    <h1>Gestion des Livres</h1>
+<h1>Gestion des Livres</h1>
 
-    <!-- Formulaire pour ajouter un livre -->
-    <h2>Ajouter un Livre</h2>
-    <form method="POST">
-        <label for="titre">Titre :</label>
-        <input type="text" name="titre" id="titre" required>
-        <label for="auteur">Auteur :</label>
-        <input type="text" name="auteur" id="auteur" required>
-        <label for="genre">Genre :</label>
-        <input type="text" name="genre" id="genre">
-        <label for="date_publication">Date de Publication :</label>
-        <input type="date" name="date_publication" id="date_publication">
-        <button type="submit" name="ajouter">Ajouter</button>
-    </form>
+<!-- Formulaire pour ajouter un livre -->
+<h2>Ajouter un Livre</h2>
+<form method="POST">
+    <label for="titre">Titre :</label>
+    <input type="text" name="titre" id="titre" required>
+    <label for="auteur">Auteur :</label>
+    <input type="text" name="auteur" id="auteur" required>
+    <label for="genre">Genre :</label>
+    <input type="text" name="genre" id="genre">
+    <label for="date_publication">Date de Publication :</label>
+    <input type="date" name="date_publication" id="date_publication">
+    <label for="total_exemplaires">Nombre Total d'Exemplaires :</label>
+    <input type="number" name="total_exemplaires" id="total_exemplaires" min="1" required>
+    <button type="submit" name="ajouter">Ajouter</button>
+</form>
 
-    <!-- Liste des livres existants -->
-    <h2>Liste des Livres</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Titre</th>
-                <th>Auteur</th>
-                <th>Genre</th>
-                <th>Date de Publication</th>
-                <th>Disponible</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for livre in livres %}
-            <tr>
-                <td>{{ livre[0] }}</td>
-                <td>{{ livre[1] }}</td>
-                <td>{{ livre[2] }}</td>
-                <td>{{ livre[3] }}</td>
-                <td>{{ livre[4] }}</td>
-                <td>{{ 'Oui' if livre[5] else 'Non' }}</td>
-                <td>
-                    <!-- Formulaire pour supprimer un livre -->
-                    <form method="POST" style="display: inline;">
-                        <input type="hidden" name="id_livre" value="{{ livre[0] }}">
-                        <button type="submit" name="supprimer" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce livre ?');">Supprimer</button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<!-- Liste des livres existants -->
+<h2>Liste des Livres</h2>
+<table id="livresTable">
+    <thead>
+        <tr>
+            <th onclick="sortTable(0)">ID</th>
+            <th onclick="sortTable(1)">Titre</th>
+            <th onclick="sortTable(2)">Auteur</th>
+            <th onclick="sortTable(3)">Genre</th>
+            <th onclick="sortTable(4)">Date de Publication</th>
+            <th onclick="sortTable(5)">Nombre Total</th>
+            <th onclick="sortTable(6)">Exemplaires Disponibles</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for livre in livres %}
+        <tr>
+            <td>{{ livre[0] }}</td>
+            <td>{{ livre[1] }}</td>
+            <td>{{ livre[2] }}</td>
+            <td>{{ livre[3] }}</td>
+            <td>{{ livre[4] }}</td>
+            <td>{{ livre[5] }}</td>
+            <td>{{ livre[6] }}</td>
+            <td>
+                <!-- Formulaire pour supprimer un livre -->
+                <form method="POST" style="display: inline;">
+                    <input type="hidden" name="id_livre" value="{{ livre[0] }}">
+                    <button type="submit" name="supprimer" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce livre ?');">Supprimer</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    /**
+     * Fonction pour trier le tableau en fonction d'une colonne
+     * @param {number} columnIndex - Index de la colonne à trier
+     */
+    function sortTable(columnIndex) {
+        const table = document.getElementById("livresTable");
+        const rows = Array.from(table.rows).slice(1); // Ignorer l'en-tête
+        const isAscending = table.getAttribute("data-sort-direction") === "asc";
+
+        // Trier les lignes en fonction de la colonne sélectionnée
+        rows.sort((a, b) => {
+            const cellA = a.cells[columnIndex].textContent.trim();
+            const cellB = b.cells[columnIndex].textContent.trim();
+
+            if (!isNaN(cellA) && !isNaN(cellB)) {
+                // Comparer les nombres
+                return isAscending ? cellA - cellB : cellB - cellA;
+            } else {
+                // Comparer les chaînes de caractères
+                return isAscending
+                    ? cellA.localeCompare(cellB)
+                    : cellB.localeCompare(cellA);
+            }
+        });
+
+        // Réinsérer les lignes triées dans le tableau
+        const tbody = table.querySelector("tbody");
+        rows.forEach(row => tbody.appendChild(row));
+
+        // Inverser la direction du tri
+        table.setAttribute("data-sort-direction", isAscending ? "desc" : "asc");
+    }
+</script>
+
 {% endblock %}

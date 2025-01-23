@@ -1,49 +1,44 @@
--- Schéma relationnel
--- Table : livres
+-- Schéma relationnel adapté pour SQLite
 CREATE TABLE livres (
-    id_livre SERIAL PRIMARY KEY,
-    titre VARCHAR(255) NOT NULL,
-    auteur VARCHAR(255) NOT NULL,
-    genre VARCHAR(100),
+    id_livre INTEGER PRIMARY KEY AUTOINCREMENT,
+    titre TEXT NOT NULL,
+    auteur TEXT NOT NULL,
+    genre TEXT,
     date_publication DATE,
-    est_disponible BOOLEAN DEFAULT TRUE
+    est_disponible BOOLEAN DEFAULT 1
 );
 
--- Table : utilisateurs
 CREATE TABLE utilisateurs (
-    id_utilisateur SERIAL PRIMARY KEY,
-    nom_utilisateur VARCHAR(100) UNIQUE NOT NULL,
-    mot_de_passe_hache VARCHAR(255) NOT NULL,
-    nom_complet VARCHAR(255) NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    est_admin BOOLEAN DEFAULT FALSE
+    id_utilisateur INTEGER PRIMARY KEY AUTOINCREMENT,
+    nom_utilisateur TEXT UNIQUE NOT NULL,
+    mot_de_passe_hache TEXT NOT NULL,
+    nom_complet TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    est_admin BOOLEAN DEFAULT 0
 );
 
--- Table : emprunts
 CREATE TABLE emprunts (
-    id_emprunt SERIAL PRIMARY KEY,
-    id_livre INT NOT NULL,
-    id_utilisateur INT NOT NULL,
+    id_emprunt INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_livre INTEGER NOT NULL,
+    id_utilisateur INTEGER NOT NULL,
     date_emprunt DATE NOT NULL DEFAULT CURRENT_DATE,
     date_retour DATE,
-    est_retourne BOOLEAN DEFAULT FALSE,
+    est_retourne BOOLEAN DEFAULT 0,
     FOREIGN KEY (id_livre) REFERENCES livres (id_livre),
     FOREIGN KEY (id_utilisateur) REFERENCES utilisateurs (id_utilisateur)
 );
 
--- Table : stock
 CREATE TABLE stock (
-    id_livre INT PRIMARY KEY,
-    total_exemplaires INT NOT NULL,
-    exemplaires_disponibles INT NOT NULL,
+    id_livre INTEGER PRIMARY KEY,
+    total_exemplaires INTEGER NOT NULL,
+    exemplaires_disponibles INTEGER NOT NULL,
     FOREIGN KEY (id_livre) REFERENCES livres (id_livre)
 );
 
--- Table : recommandations
 CREATE TABLE recommandations (
-    id_recommandation SERIAL PRIMARY KEY,
-    id_utilisateur INT NOT NULL,
-    id_livre INT NOT NULL,
+    id_recommandation INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_utilisateur INTEGER NOT NULL,
+    id_livre INTEGER NOT NULL,
     date_recommandation DATE NOT NULL DEFAULT CURRENT_DATE,
     FOREIGN KEY (id_utilisateur) REFERENCES utilisateurs (id_utilisateur),
     FOREIGN KEY (id_livre) REFERENCES livres (id_livre)
@@ -51,4 +46,4 @@ CREATE TABLE recommandations (
 
 -- Insérer un utilisateur administrateur par défaut
 INSERT INTO utilisateurs (nom_utilisateur, mot_de_passe_hache, nom_complet, email, est_admin)
-VALUES ('admin', 'mot_de_passe_haché_ici', 'Administrateur', 'admin@bibliotheque.com', TRUE);
+VALUES ('admin', 'mot_de_passe_haché_ici', 'Administrateur', 'admin@bibliotheque.com', 1);

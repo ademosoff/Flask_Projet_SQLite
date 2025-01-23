@@ -1,25 +1,19 @@
 {% extends "base.html" %}
 
-    {% block title %}
-        Consultation des Livres
-    {% endblock %}
+{% block title %}
+    Consultation des Livres
+{% endblock %}
 
 {% block content %}
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-    </style>
     <h1>Liste des Livres</h1>
+
+    <!-- Formulaire de recherche -->
+    <form method="GET" action="/consultation_livre/">
+        <input type="text" name="recherche" placeholder="Rechercher un livre..." value="{{ request.args.get('recherche', '') }}">
+        <button type="submit">Rechercher</button>
+    </form>
+
+    <h2>Livres Disponibles</h2>
     <table>
         <thead>
             <tr>
@@ -29,6 +23,7 @@
                 <th>Genre</th>
                 <th>Date de Publication</th>
                 <th>Disponible</th>
+                <th>Emprunter</th>
             </tr>
         </thead>
         <tbody>
@@ -40,6 +35,45 @@
                 <td>{{ livre[3] }}</td>
                 <td>{{ livre[4] }}</td>
                 <td>{{ 'Oui' if livre[5] else 'Non' }}</td>
+                <td>
+                    {% if livre[5] %}
+                    <form method="POST" action="/consultation_livre/">
+                        <input type="hidden" name="emprunter_id" value="{{ livre[0] }}">
+                        <button type="submit">Emprunter</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Livres Empruntés</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Titre</th>
+                <th>Auteur</th>
+                <th>Genre</th>
+                <th>Date de Publication</th>
+                <th>Rendre</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for livre in livres_empruntes %}
+            <tr>
+                <td>{{ livre[0] }}</td>
+                <td>{{ livre[1] }}</td>
+                <td>{{ livre[2] }}</td>
+                <td>{{ livre[3] }}</td>
+                <td>{{ livre[4] }}</td>
+                <td>
+                    <form method="POST" action="/consultation_livre/">
+                        <input type="hidden" name="rendre_id" value="{{ livre[0] }}">
+                        <button type="submit">Rendre</button>
+                    </form>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

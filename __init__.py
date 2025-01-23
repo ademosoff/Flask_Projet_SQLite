@@ -262,7 +262,7 @@ def gestion_user_livres():
 
 @app.route('/livres/', methods=['GET', 'POST'])
 def gestion_livres():
-    if estadmin() :
+    if est_admin() :
         if request.method == 'POST':
             # Connexion à la base de données
             conn = sqlite3.connect(DB_LIVRE)

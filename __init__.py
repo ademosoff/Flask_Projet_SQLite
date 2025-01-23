@@ -253,7 +253,7 @@ def gestion_user_livres():
         emprunts = cursor.fetchall()
     
         conn.close()
-        return render_template('gestion_livres.html', livres=livres, emprunts=emprunts)
+        return render_template('gestion_user_livres.html', livres=livres, emprunts=emprunts)
     elif estadmin():
         redirect(url_for('gestion_livres'))
 

@@ -1,4 +1,4 @@
--- Schéma relationnel adapté pour SQLite
+-- Schéma relationnel adapté pour SQLite avec TRIGGER
 CREATE TABLE livres (
     id_livre INTEGER PRIMARY KEY AUTOINCREMENT,
     titre TEXT NOT NULL,
@@ -43,6 +43,19 @@ CREATE TABLE recommandations (
     FOREIGN KEY (id_utilisateur) REFERENCES utilisateurs (id_utilisateur),
     FOREIGN KEY (id_livre) REFERENCES livres (id_livre)
 );
+
+-- Trigger pour mettre à jour est_disponible en fonction de exemplaires_disponibles
+CREATE TRIGGER maj_disponibilite
+AFTER UPDATE OF exemplaires_disponibles ON stock
+FOR EACH ROW
+BEGIN
+    UPDATE livres
+    SET est_disponible = CASE 
+        WHEN NEW.exemplaires_disponibles > 0 THEN 1
+        ELSE 0
+    END
+    WHERE id_livre = NEW.id_livre;
+END;
 
 -- Insérer un utilisateur administrateur par défaut
 INSERT INTO utilisateurs (nom_utilisateur, mot_de_passe_hache, nom_complet, email, est_admin)

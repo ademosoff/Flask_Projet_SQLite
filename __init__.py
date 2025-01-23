@@ -169,13 +169,13 @@ def ReadBDD_livre():
         # Emprunter un livre
         livre_id = request.form.get('emprunter_id')
         if livre_id:
-            cursor.execute('UPDATE livres SET disponible = 0 WHERE id = ?', (livre_id,))
+            cursor.execute('UPDATE livres SET est_disponible = 0 WHERE id = ?', (livre_id,))
             conn.commit()
 
         # Rendre un livre
         rendre_id = request.form.get('rendre_id')
         if rendre_id:
-            cursor.execute('UPDATE livres SET disponible = 1 WHERE id = ?', (rendre_id,))
+            cursor.execute('UPDATE livres SET est_disponible = 1 WHERE id = ?', (rendre_id,))
             conn.commit()
 
     # Recherche des livres
@@ -189,71 +189,134 @@ def ReadBDD_livre():
 
     # Liste des livres empruntés par l'utilisateur
     # Ajoutez un champ utilisateur_id pour stocker qui emprunte quoi
-    cursor.execute('SELECT * FROM livres WHERE disponible = 0 AND utilisateur_id IS NOT NULL;')
+    cursor.execute('SELECT * FROM livres WHERE est_disponible = 0 AND utilisateur_id IS NOT NULL;')
     livres_empruntes = cursor.fetchall()
 
     conn.close()
 
     return render_template('read_livre.html', data=data, livres_empruntes=livres_empruntes)
 
+@app.route('/gestion_livres/', methods=['GET', 'POST'])
+def gestion_user_livres():
+    if est_user():
+        conn = sqlite3.connect(DB_LIVRE)
+        cursor = conn.cursor()
+    
+        # Si une action POST est effectuée (ajout, emprunt, ou retour d'un livre)
+        if request.method == 'POST':
+            if 'emprunter' in request.form:
+                # Emprunt d'un livre
+                id_livre = request.form['id_livre']
+                id_utilisateur = request.form['id_utilisateur']
+                cursor.execute("""
+                    INSERT INTO emprunts (id_livre, id_utilisateur, est_retourne)
+                    VALUES (?, ?, 0)
+                """, (id_livre, id_utilisateur))
+                cursor.execute("""
+                    UPDATE stock
+                    SET exemplaires_disponibles = exemplaires_disponibles - 1
+                    WHERE id_livre = ? AND exemplaires_disponibles > 0
+                """, (id_livre,))
+    
+            elif 'rendre' in request.form:
+                # Retour d'un livre
+                id_emprunt = request.form['id_emprunt']
+                id_livre = request.form['id_livre']
+                cursor.execute("""
+                    UPDATE emprunts
+                    SET est_retourne = 1, date_retour = CURRENT_DATE
+                    WHERE id_emprunt = ?
+                """, (id_emprunt,))
+                cursor.execute("""
+                    UPDATE stock
+                    SET exemplaires_disponibles = exemplaires_disponibles + 1
+                    WHERE id_livre = ?
+                """, (id_livre,))
+    
+            conn.commit()
+            return redirect(url_for('gestion_livres'))
+    
+        # Récupération des données
+        cursor.execute("""
+            SELECT l.id_livre, l.titre, l.auteur, l.genre, l.date_publication, s.total_exemplaires, s.exemplaires_disponibles
+            FROM livres l
+            LEFT JOIN stock s ON l.id_livre = s.id_livre
+        """)
+        livres = cursor.fetchall()
+    
+        cursor.execute("""
+            SELECT e.id_emprunt, l.id_livre, l.titre, e.date_emprunt, e.date_retour, e.est_retourne
+            FROM emprunts e
+            INNER JOIN livres l ON e.id_livre = l.id_livre
+            WHERE e.id_utilisateur = ?
+        """, (1,))  # Remplacez par l'ID de l'utilisateur connecté
+        emprunts = cursor.fetchall()
+    
+        conn.close()
+        return render_template('gestion_livres.html', livres=livres, emprunts=emprunts)
+    elif estadmin():
+        redirect(url_for('gestion_livres'))
 
 @app.route('/livres/', methods=['GET', 'POST'])
 def gestion_livres():
-    if request.method == 'POST':
-        # Connexion à la base de données
+    if estadmin() :
+        if request.method == 'POST':
+            # Connexion à la base de données
+            conn = sqlite3.connect(DB_LIVRE)
+            cursor = conn.cursor()
+            
+            # Si le formulaire d'ajout est soumis
+            if 'ajouter' in request.form:
+                titre = request.form['titre']
+                auteur = request.form['auteur']
+                genre = request.form['genre']
+                date_publication = request.form['date_publication']
+                total_exemplaires = int(request.form['total_exemplaires'])
+                exemplaires_disponibles = total_exemplaires  # Initialement, tous les exemplaires sont disponibles
+                
+                # Insérer le livre dans la table "livres"
+                cursor.execute("""
+                    INSERT INTO livres (titre, auteur, genre, date_publication, est_disponible)
+                    VALUES (?, ?, ?, ?, 1)
+                """, (titre, auteur, genre, date_publication))
+                
+                # Récupérer l'ID du livre ajouté
+                id_livre = cursor.lastrowid
+                
+                # Ajouter les informations de stock pour ce livre
+                cursor.execute("""
+                    INSERT INTO stock (id_livre, total_exemplaires, exemplaires_disponibles)
+                    VALUES (?, ?, ?)
+                """, (id_livre, total_exemplaires, exemplaires_disponibles))
+            
+            # Si une suppression est demandée
+            if 'supprimer' in request.form:
+                id_livre = request.form['id_livre']
+                # Supprimer le livre de la table "livres" et ses informations de stock
+                cursor.execute("DELETE FROM stock WHERE id_livre = ?", (id_livre,))
+                cursor.execute("DELETE FROM livres WHERE id_livre = ?", (id_livre,))
+            
+            # Validation des modifications
+            conn.commit()
+            conn.close()
+            
+            return redirect(url_for('gestion_livres'))
+        
+        # Récupération des livres avec les informations de stock
         conn = sqlite3.connect(DB_LIVRE)
         cursor = conn.cursor()
-        
-        # Si le formulaire d'ajout est soumis
-        if 'ajouter' in request.form:
-            titre = request.form['titre']
-            auteur = request.form['auteur']
-            genre = request.form['genre']
-            date_publication = request.form['date_publication']
-            total_exemplaires = int(request.form['total_exemplaires'])
-            exemplaires_disponibles = total_exemplaires  # Initialement, tous les exemplaires sont disponibles
-            
-            # Insérer le livre dans la table "livres"
-            cursor.execute("""
-                INSERT INTO livres (titre, auteur, genre, date_publication, est_disponible)
-                VALUES (?, ?, ?, ?, 1)
-            """, (titre, auteur, genre, date_publication))
-            
-            # Récupérer l'ID du livre ajouté
-            id_livre = cursor.lastrowid
-            
-            # Ajouter les informations de stock pour ce livre
-            cursor.execute("""
-                INSERT INTO stock (id_livre, total_exemplaires, exemplaires_disponibles)
-                VALUES (?, ?, ?)
-            """, (id_livre, total_exemplaires, exemplaires_disponibles))
-        
-        # Si une suppression est demandée
-        if 'supprimer' in request.form:
-            id_livre = request.form['id_livre']
-            # Supprimer le livre de la table "livres" et ses informations de stock
-            cursor.execute("DELETE FROM stock WHERE id_livre = ?", (id_livre,))
-            cursor.execute("DELETE FROM livres WHERE id_livre = ?", (id_livre,))
-        
-        # Validation des modifications
-        conn.commit()
+        cursor.execute("""
+            SELECT l.id_livre, l.titre, l.auteur, l.genre, l.date_publication, 
+                   s.total_exemplaires, s.exemplaires_disponibles
+            FROM livres l
+            LEFT JOIN stock s ON l.id_livre = s.id_livre
+        """)
+        livres = cursor.fetchall()
         conn.close()
         
-        return redirect(url_for('gestion_livres'))
-    
-    # Récupération des livres avec les informations de stock
-    conn = sqlite3.connect(DB_LIVRE)
-    cursor = conn.cursor()
-    cursor.execute("""
-        SELECT l.id_livre, l.titre, l.auteur, l.genre, l.date_publication, 
-               s.total_exemplaires, s.exemplaires_disponibles
-        FROM livres l
-        LEFT JOIN stock s ON l.id_livre = s.id_livre
-    """)
-    livres = cursor.fetchall()
-    conn.close()
-    
-    return render_template('livres.html', livres=livres)
+        return render_template('livres.html', livres=livres)
+    else :
+        return "<h2>ACCESS DENIED</h2>"
 
 if __name__ == "__main__":
   app.run(debug=True)

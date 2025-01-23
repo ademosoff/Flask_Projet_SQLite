@@ -235,7 +235,7 @@ def gestion_user_livres():
                 """, (id_livre,))
     
             conn.commit()
-            return redirect(url_for('gestion_livres'))
+            return redirect(url_for('gestion_user_livres'))
     
         # Récupération des données
         cursor.execute("""

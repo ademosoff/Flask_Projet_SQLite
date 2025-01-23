@@ -11,7 +11,7 @@ app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'  # Clé secrète pour les sessions
 
 #------------------------SEQUENCE 5---------------------------
 
-DB_FILE = "database.d"
+DB_FILE = "database.db"
 DB_LIVRE = "database2.db"
 
 # Durée maximale d'inactivité en secondes (10 minutes)
@@ -184,14 +184,29 @@ def gestion_livres():
             auteur = request.form['auteur']
             genre = request.form['genre']
             date_publication = request.form['date_publication']
+            total_exemplaires = int(request.form['total_exemplaires'])
+            exemplaires_disponibles = total_exemplaires  # Initialement, tous les exemplaires sont disponibles
+            
+            # Insérer le livre dans la table "livres"
             cursor.execute("""
                 INSERT INTO livres (titre, auteur, genre, date_publication, est_disponible)
                 VALUES (?, ?, ?, ?, 1)
             """, (titre, auteur, genre, date_publication))
+            
+            # Récupérer l'ID du livre ajouté
+            id_livre = cursor.lastrowid
+            
+            # Ajouter les informations de stock pour ce livre
+            cursor.execute("""
+                INSERT INTO stock (id_livre, total_exemplaires, exemplaires_disponibles)
+                VALUES (?, ?, ?)
+            """, (id_livre, total_exemplaires, exemplaires_disponibles))
         
         # Si une suppression est demandée
         if 'supprimer' in request.form:
             id_livre = request.form['id_livre']
+            # Supprimer le livre de la table "livres" et ses informations de stock
+            cursor.execute("DELETE FROM stock WHERE id_livre = ?", (id_livre,))
             cursor.execute("DELETE FROM livres WHERE id_livre = ?", (id_livre,))
         
         # Validation des modifications
@@ -200,10 +215,15 @@ def gestion_livres():
         
         return redirect(url_for('gestion_livres'))
     
-    # Récupération des livres pour affichage
+    # Récupération des livres avec les informations de stock
     conn = sqlite3.connect(DB_LIVRE)
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM livres")
+    cursor.execute("""
+        SELECT l.id_livre, l.titre, l.auteur, l.genre, l.date_publication, 
+               s.total_exemplaires, s.exemplaires_disponibles
+        FROM livres l
+        LEFT JOIN stock s ON l.id_livre = s.id_livre
+    """)
     livres = cursor.fetchall()
     conn.close()
     

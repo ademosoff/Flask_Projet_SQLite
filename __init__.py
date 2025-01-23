@@ -190,7 +190,7 @@ def ReadBDD_livre():
 
     # Liste des livres empruntés par l'utilisateur
     # Ajoutez un champ utilisateur_id pour stocker qui emprunte quoi
-    cursor.execute('SELECT * FROM livres WHERE est_disponible = 0 AND ? IS NOT NULL;', (session['username'],))
+    cursor.execute('SELECT * FROM livres WHERE est_disponible = 0 AND ? IS NOT NULL;', ('0',))
     livres_empruntes = cursor.fetchall()
 
     conn.close()

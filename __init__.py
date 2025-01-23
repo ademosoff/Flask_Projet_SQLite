@@ -160,16 +160,42 @@ def search_client():
 
 #---------------------------SEQUENCE 6----------------------------
 
-@app.route('/consultation_livre/')
+@app.route('/consultation_livre/', methods=['GET', 'POST'])
 def ReadBDD_livre():
     conn = sqlite3.connect(DB_LIVRE)
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM livres;')
+
+    if request.method == 'POST':
+        # Emprunter un livre
+        livre_id = request.form.get('emprunter_id')
+        if livre_id:
+            cursor.execute('UPDATE livres SET disponible = 0 WHERE id = ?', (livre_id,))
+            conn.commit()
+
+        # Rendre un livre
+        rendre_id = request.form.get('rendre_id')
+        if rendre_id:
+            cursor.execute('UPDATE livres SET disponible = 1 WHERE id = ?', (rendre_id,))
+            conn.commit()
+
+    # Recherche des livres
+    recherche = request.args.get('recherche', '')
+    if recherche:
+        cursor.execute("SELECT * FROM livres WHERE titre LIKE ? OR auteur LIKE ?", (f"%{recherche}%", f"%{recherche}%"))
+    else:
+        cursor.execute('SELECT * FROM livres;')
+    
     data = cursor.fetchall()
+
+    # Liste des livres empruntés par l'utilisateur
+    # Ajoutez un champ utilisateur_id pour stocker qui emprunte quoi
+    cursor.execute('SELECT * FROM livres WHERE disponible = 0 AND utilisateur_id IS NOT NULL;')
+    livres_empruntes = cursor.fetchall()
+
     conn.close()
 
-    # Passer les données au template pour affichage
-    return render_template('read_livre.html', data=data)
+    return render_template('read_livre.html', data=data, livres_empruntes=livres_empruntes)
+
 
 @app.route('/livres/', methods=['GET', 'POST'])
 def gestion_livres():

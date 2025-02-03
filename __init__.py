@@ -197,7 +197,87 @@ def ReadBDD_livre():
 
     return render_template('read_livre.html', data=data, livres_empruntes=livres_empruntes)
 
-@app.route('/livres2/', methods=['GET', 'POST'])
+
+@app.route('/livres/', methods=['GET', 'POST'])
+def gestion_livres_user():
+    if 'user' not in session:
+        return redirect(url_for('authentification', next=request.path))
+    
+    id_utilisateur = request.form['id_utilisateur']
+
+    conn = sqlite3.connect(DB_LIVRE)
+    cursor = conn.cursor()
+
+    # Gestion des emprunts et retours
+    if request.method == 'POST':
+        if 'emprunter' in request.form:
+            id_livre = request.form['id_livre']
+            cursor.execute("""
+                INSERT INTO emprunts (id_livre, id_utilisateur, est_retourne, date_emprunt)
+                VALUES (?, ?, 0, CURRENT_DATE)
+            """, (id_livre, id_utilisateur))
+            cursor.execute("""
+                UPDATE stock
+                SET exemplaires_disponibles = exemplaires_disponibles - 1
+                WHERE id_livre = ? AND exemplaires_disponibles > 0
+            """, (id_livre,))
+        
+        elif 'rendre' in request.form:
+            id_emprunt = request.form['id_emprunt']
+            id_livre = request.form['id_livre']
+            cursor.execute("""
+                UPDATE emprunts
+                SET est_retourne = 1, date_retour = CURRENT_DATE
+                WHERE id_emprunt = ? AND id_utilisateur = ?
+            """, (id_emprunt, id_utilisateur))
+            cursor.execute("""
+                UPDATE stock
+                SET exemplaires_disponibles = exemplaires_disponibles + 1
+                WHERE id_livre = ?
+            """, (id_livre,))
+
+        conn.commit()
+        return redirect(url_for('gestion_livres_user'))
+
+    # Récupération des livres disponibles
+    cursor.execute("""
+        SELECT l.id_livre, l.titre, l.auteur, l.genre, l.date_publication, 
+               s.total_exemplaires, s.exemplaires_disponibles
+        FROM livres l
+        LEFT JOIN stock s ON l.id_livre = s.id_livre
+    """)
+    livres = cursor.fetchall()
+
+    if est_user():
+        # Récupération des livres empruntés par l'utilisateur connecté
+        cursor.execute("""
+            SELECT e.id_emprunt, l.id_livre, l.titre, e.date_emprunt, e.date_retour, e.est_retourne
+            FROM emprunts e
+            INNER JOIN livres l ON e.id_livre = l.id_livre
+            WHERE e.id_utilisateur = ?
+        """, (id_utilisateur,))
+        emprunts = cursor.fetchall()
+        
+        conn.close()
+        return render_template('gestion_user_livres.html', livres=livres, emprunts=emprunts)
+    
+    elif est_admin():
+        # Récupération des livres empruntés par tous les utilisateurs
+        cursor.execute("""
+            SELECT e.id_emprunt, e.id_utilisateur, u.nom, l.id_livre, l.titre, e.date_emprunt, e.date_retour, e.est_retourne
+            FROM emprunts e
+            INNER JOIN livres l ON e.id_livre = l.id_livre
+            INNER JOIN utilisateurs u ON e.id_utilisateur = u.id_utilisateur
+        """)
+        emprunts_admin = cursor.fetchall()
+        
+        conn.close()
+        return render_template('gestion_admin_livres.html', livres=livres, emprunts=emprunts_admin)
+
+    conn.close()
+    return redirect(url_for('authentification', next=request.path))
+
+@app.route('/livres/', methods=['GET', 'POST'])
 def gestion_livres_user():
     if est_user():
         conn = sqlite3.connect(DB_LIVRE)

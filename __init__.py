@@ -49,6 +49,10 @@ def verifier_inactivite():
 
 @app.route('/')
 def hello_world():
+    return redirect(url_for('home'))
+
+@app.route('/home')
+def home():
     return render_template('hello.html')
 
 @app.route('/lecture')
@@ -90,7 +94,7 @@ def logout():
         return "<h2>Déjà déconnecté !</h2>"
     session.pop('role', None)
     session.pop('username', None)
-    return "<h2>Déconnection, veuillez fermer la page !</h2>"
+    return redirect(url_for('home'))
 
 @app.route('/fiche_client/<int:post_id>')
 def Readfiche(post_id):
@@ -113,7 +117,7 @@ def ReadBDD():
 
 @app.route('/enregistrer_client', methods=['GET'])
 def formulaire_client():
-    return render_template('formulaire.html')  # afficher le formulaire
+    return render_template('formulaire_new_client.html')  # afficher le formulaire
 
 @app.route('/enregistrer_client', methods=['POST'])
 def enregistrer_client():

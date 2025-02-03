@@ -319,7 +319,7 @@ def gestion_livres():
         
         return render_template('livres.html', livres=livres)
     else :
-        return "<h2>ACCESS DENIED</h2>"
+        return redirect(url_for('hello_world'))
 
 if __name__ == "__main__":
   app.run(debug=True)

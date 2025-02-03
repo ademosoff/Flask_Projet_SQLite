@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Déconnexion{% endblock %}
+
+{% block content %}
+    <h1>Vous êtes déconnecté</h1>
+    <p>Redirection vers l'accueil...</p>
+
+    <script>
+        // Redirection automatique après 5 secondes
+        setTimeout(function() {
+            window.location.href = "{{ url_for('home') }}";
+        }, 5000);
+    </script>
+{% endblock %}

@@ -197,8 +197,8 @@ def ReadBDD_livre():
 
     return render_template('read_livre.html', data=data, livres_empruntes=livres_empruntes)
 
-@app.route('/gestion_livres/', methods=['GET', 'POST'])
-def gestion_user_livres():
+@app.route('/livres/', methods=['GET', 'POST'])
+def gestion_livres_user():
     if est_user():
         conn = sqlite3.connect(DB_LIVRE)
         cursor = conn.cursor()
@@ -235,7 +235,7 @@ def gestion_user_livres():
                 """, (id_livre,))
     
             conn.commit()
-            return redirect(url_for('gestion_user_livres'))
+            return redirect(url_for('gestion_livres_user'))
     
         # Récupération des données
         cursor.execute("""
@@ -260,7 +260,7 @@ def gestion_user_livres():
     else :
         return redirect(url_for('authentification', next=request.path))
 
-@app.route('/livres/', methods=['GET', 'POST'])
+@app.route('/gestion_livres/', methods=['GET', 'POST'])
 def gestion_livres():
     if est_admin() :
         if request.method == 'POST':

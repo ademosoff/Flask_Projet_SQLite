@@ -5,6 +5,50 @@ Accueil
 {% endblock %}
 
 {% block content %}
-<h1>Bienvenue sur la page d'accueil</h1>
-<p>Ceci est une démonstration avec une barre de navigation.</p>
+<div class="container text-center">
+    <h1>Bienvenue sur la page d'accueil</h1>
+    <p>Ceci est une démonstration avec une barre de navigation.</p>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <a href="{{ url_for('authentification') }}" class="btn btn-primary btn-lg btn-block">Connexion</a>
+        </div>
+        <div class="col-md-6">
+            <a href="{{ url_for('logout') }}" class="btn btn-danger btn-lg btn-block">Déconnexion</a>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <a href="{{ url_for('lecture') }}" class="btn btn-success btn-lg btn-block">Lecture</a>
+        </div>
+        <div class="col-md-6">
+            <a href="{{ url_for('ReadBDD') }}" class="btn btn-info btn-lg btn-block">Consultation Clients</a>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <a href="{{ url_for('formulaire_client') }}" class="btn btn-warning btn-lg btn-block">Ajouter un Client</a>
+        </div>
+        <div class="col-md-6">
+            <a href="{{ url_for('formulaire_search') }}" class="btn btn-secondary btn-lg btn-block">Rechercher un Client</a>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <a href="{{ url_for('ReadBDD_livre') }}" class="btn btn-dark btn-lg btn-block">Consultation Livres</a>
+        </div>
+        <div class="col-md-6">
+            <a href="{{ url_for('gestion_user_livres') }}" class="btn btn-light btn-lg btn-block">Gérer Mes Livres</a>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <a href="{{ url_for('gestion_livres') }}" class="btn btn-outline-primary btn-lg btn-block">Gestion des Livres (Admin)</a>
+        </div>
+    </div>
+</div>
 {% endblock %}

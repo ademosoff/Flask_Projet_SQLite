@@ -197,7 +197,7 @@ def ReadBDD_livre():
 
     return render_template('read_livre.html', data=data, livres_empruntes=livres_empruntes)
 
-@app.route('/livres/', methods=['GET', 'POST'])
+@app.route('/livres2/', methods=['GET', 'POST'])
 def gestion_livres_user():
     if est_user():
         conn = sqlite3.connect(DB_LIVRE)

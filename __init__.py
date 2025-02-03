@@ -49,7 +49,7 @@ def verifier_inactivite():
 
 @app.route('/')
 def home():
-    return render_template('hello.html')
+    return render_template('home.html')
 
 @app.route('/lecture')
 def lecture():

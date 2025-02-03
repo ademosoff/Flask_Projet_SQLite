@@ -27,11 +27,11 @@
                             <span class="nav-link">Connecté en tant que : <strong>{{ session['username'] }}</strong></span>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link btn btn-danger text-white" href="{{ url_for('logout') }}">Déconnexion</a>
+                            <a class="nav-link btn btn-danger" href="{{ url_for('logout') }}">Déconnexion</a>
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link btn btn-primary text-white" href="{{ url_for('authentification') }}">Connexion</a>
+                            <a class="nav-link btn btn-primary" href="{{ url_for('authentification') }}">Connexion</a>
                         </li>
                     {% endif %}
                 </ul>

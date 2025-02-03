@@ -48,10 +48,6 @@ def verifier_inactivite():
         session['dernier_acces'] = maintenant
 
 @app.route('/')
-def hello_world():
-    return redirect(url_for('home'))
-
-@app.route('/home')
 def home():
     return render_template('hello.html')
 

@@ -319,7 +319,7 @@ def gestion_livres():
         
         return render_template('livres.html', livres=livres)
     else :
-        return redirect(url_for('hello_world'))
+        return redirect(url_for('home'))
 
 if __name__ == "__main__":
   app.run(debug=True)

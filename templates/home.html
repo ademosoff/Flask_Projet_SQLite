@@ -6,49 +6,54 @@ Accueil
 
 {% block content %}
 <div class="container text-center">
-    <h1>Bienvenue sur la page d'accueil</h1>
-    <p>Ceci est une démonstration avec une barre de navigation.</p>
+    <h1 class="mb-4">Bienvenue sur la page d'accueil</h1>
+    <p>Accédez rapidement aux différentes fonctionnalités grâce aux boutons ci-dessous.</p>
 
-    <div class="row mt-4">
-        <div class="col-md-6">
-            <a href="{{ url_for('authentification') }}" class="btn btn-primary btn-lg btn-block">Connexion</a>
+    <!-- Si l'utilisateur n'est pas connecté, afficher seulement le bouton Connexion -->
+    {% if 'role' not in session %}
+        <div class="mt-4">
+            <a href="{{ url_for('authentification') }}" class="btn btn-primary btn-lg" style="background-color: #0A3D62; border-color: #0A3D62;">Connexion</a>
         </div>
-        <div class="col-md-6">
-            <a href="{{ url_for('logout') }}" class="btn btn-danger btn-lg btn-block">Déconnexion</a>
+    {% else %}
+        <!-- Si l'utilisateur est connecté, afficher tous les boutons -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <a href="{{ url_for('lecture') }}" class="btn btn-lg btn-block" style="background-color: #0A3D62; color: white;">Lecture</a>
+            </div>
+            <div class="col-md-6">
+                <a href="{{ url_for('ReadBDD') }}" class="btn btn-lg btn-block" style="background-color: #38ADA9; color: white;">Consultation Clients</a>
+            </div>
         </div>
-    </div>
 
-    <div class="row mt-4">
-        <div class="col-md-6">
-            <a href="{{ url_for('lecture') }}" class="btn btn-success btn-lg btn-block">Lecture</a>
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <a href="{{ url_for('formulaire_client') }}" class="btn btn-lg btn-block" style="background-color: #F7B731; color: white;">Ajouter un Client</a>
+            </div>
+            <div class="col-md-6">
+                <a href="{{ url_for('formulaire_search') }}" class="btn btn-lg btn-block" style="background-color: #F7B731; color: white;">Rechercher un Client</a>
+            </div>
         </div>
-        <div class="col-md-6">
-            <a href="{{ url_for('ReadBDD') }}" class="btn btn-info btn-lg btn-block">Consultation Clients</a>
-        </div>
-    </div>
 
-    <div class="row mt-4">
-        <div class="col-md-6">
-            <a href="{{ url_for('formulaire_client') }}" class="btn btn-warning btn-lg btn-block">Ajouter un Client</a>
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <a href="{{ url_for('ReadBDD_livre') }}" class="btn btn-lg btn-block" style="background-color: #38ADA9; color: white;">Consultation Livres</a>
+            </div>
+            <div class="col-md-6">
+                <a href="{{ url_for('gestion_user_livres') }}" class="btn btn-lg btn-block" style="background-color: #F5F5F5; color: #0A3D62; border: 1px solid #0A3D62;">Gérer Mes Livres</a>
+            </div>
         </div>
-        <div class="col-md-6">
-            <a href="{{ url_for('formulaire_search') }}" class="btn btn-secondary btn-lg btn-block">Rechercher un Client</a>
-        </div>
-    </div>
 
-    <div class="row mt-4">
-        <div class="col-md-6">
-            <a href="{{ url_for('ReadBDD_livre') }}" class="btn btn-dark btn-lg btn-block">Consultation Livres</a>
+        {% if session['role'] == 'admin' %}
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <a href="{{ url_for('gestion_livres') }}" class="btn btn-lg btn-block" style="background-color: #0A3D62; color: white;">Gestion des Livres (Admin)</a>
+            </div>
         </div>
-        <div class="col-md-6">
-            <a href="{{ url_for('gestion_user_livres') }}" class="btn btn-light btn-lg btn-block">Gérer Mes Livres</a>
-        </div>
-    </div>
+        {% endif %}
 
-    <div class="row mt-4">
-        <div class="col-md-12">
-            <a href="{{ url_for('gestion_livres') }}" class="btn btn-outline-primary btn-lg btn-block">Gestion des Livres (Admin)</a>
+        <div class="mt-4">
+            <a href="{{ url_for('logout') }}" class="btn btn-lg" style="background-color: #D63031; color: white;">Déconnexion</a>
         </div>
-    </div>
+    {% endif %}
 </div>
 {% endblock %}

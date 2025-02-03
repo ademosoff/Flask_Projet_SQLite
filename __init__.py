@@ -90,7 +90,7 @@ def logout():
         return "<h2>Déjà déconnecté !</h2>"
     session.pop('role', None)
     session.pop('username', None)
-    return redirect(url_for('home'))
+    return render_template('logout.html')
 
 @app.route('/fiche_client/<int:post_id>')
 def Readfiche(post_id):
